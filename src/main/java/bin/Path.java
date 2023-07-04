@@ -9,10 +9,10 @@ public class Path {
     private List<Node> nodeList;
     private int distance;
 
-    public Path(Node source, Node target, List<Node> edgeList, int distance) {
+    public Path(Node source, Node target, List<Node> nodeList, int distance) {
         this.source = source;
         this.target = target;
-        this.nodeList = edgeList;
+        this.nodeList = nodeList;
         this.distance = distance;
     }
 
