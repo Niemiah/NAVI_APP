@@ -7,7 +7,7 @@ import controller.logic.IGraphFactory;
 
 import controller.logic.IPathAlgorithm;
 import controller.logic.implDijkstra.PathAlgorithm;
-import controller.logic.implDijkstra.GraphFactory;
+import controller.logic.implFacotry.GraphFactory;
 import controller.service.INavService;
 
 public class NavService implements INavService {
