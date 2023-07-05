@@ -9,24 +9,32 @@ import bin.Node;
 import java.util.*;
 
 public class GraphFactory implements IGraphFactory {
-    public static final List<Integer> NODE_IDS = List.of(0, 1, 2, 3);
-    public static final int COORDINATE_UPPER_BOUND = 50;
-    public static final int COORDINATE_LOWER_BOUND = 10;
+    public static final List<Integer> NODE_IDS = List.of(0, 1, 2, 3, 4, 5, 6, 7);
+    public static final int XY_UPPER_BOUND = 50;
+    public static final int XY_LOWER_BOUND = 10;
     public static final IDistanceFinder distanceFinder = new DistanceFinder();
+    public static final Random random = new Random();
 
     @Override
     public Graph generateGraph() {
-        // generate nodes w/o edges
+        List<Node> nodeList = generateNodes();
+        addEdges(nodeList);
+        addMoreEdges(nodeList);
+        return new Graph(nodeList);
+    }
+    // generate nodes w/o edges
+    private List<Node> generateNodes() {
         List<Node> nodeList = new ArrayList<>();
-        Random random = new Random();
         for (int id : NODE_IDS) {
-            int x = random.nextInt(COORDINATE_UPPER_BOUND - COORDINATE_LOWER_BOUND) + COORDINATE_LOWER_BOUND;
-            int y = random.nextInt(COORDINATE_UPPER_BOUND - COORDINATE_LOWER_BOUND) + COORDINATE_LOWER_BOUND;
+            int x = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
+            int y = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
             Node node = new Node(id, x, y);
             nodeList.add(node);
         }
-
-        // generate guaranteed route edges
+    return nodeList;
+    }
+    // generate guaranteed route edges
+    private void addEdges(List<Node> nodeList) {
         for (int i : NODE_IDS) {
             Node node = nodeList.get(i);
             Edge edge = new Edge();
@@ -40,8 +48,10 @@ public class GraphFactory implements IGraphFactory {
             }
             node.addEdge(edge);
         }
-
-        // generate additional route edges
+    }
+    // update logic
+    // generate additional route edges
+    private void addMoreEdges(List <Node> nodeList){
         for (int i : NODE_IDS) {
             Node node = nodeList.get(i);
             Edge edge = new Edge();
@@ -59,6 +69,5 @@ public class GraphFactory implements IGraphFactory {
             edge.setDistance(distanceFinder.getDistance(node, nodeList.get(destinationIndex)));
             node.addEdge(edge);
         }
-        return new Graph(nodeList);
     }
 }
