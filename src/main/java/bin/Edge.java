@@ -51,17 +51,17 @@ public class Edge {
         return distance == edge.distance && Objects.equals(source, edge.source) && Objects.equals(destination, edge.destination);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(source, destination, distance);
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, destination, distance);
     }
 
     @Override

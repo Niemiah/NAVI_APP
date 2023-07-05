@@ -1,4 +1,4 @@
-package controller.logic.implDijkstra;
+package controller.logic.implFacotry;
 import controller.logic.IDistanceFinder;
 import bin.Node;
 
