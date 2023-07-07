@@ -6,6 +6,8 @@ import bin.Node;
 import bin.Path;
 import controller.service.INavService;
 import controller.service.impl.NavService;
+import user.IUserInterface;
+import user.UserInterface;
 
 import java.util.List;
 import java.util.Random;
@@ -21,8 +23,7 @@ import java.util.stream.Collectors;
 
 public class Test {
     public static void main(String[] args) {
-        INavService navService = new NavService();
-        Graph graph = navService.getGraph();
-        System.out.println(graph);
+        IUserInterface userInterface = new UserInterface();
+        userInterface.start();
     }
 }
