@@ -60,7 +60,7 @@ public class UserInterface implements IUserInterface {
         System.out.println("Thank you for using the shortest path finder!");
     }
 
-    private void displayGraph() {
+    public void displayGraph() {
         List<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
             System.out.println("Node number " + node.getId() + " at coordinates (" + node.getX() + ", " + node.getY() + ")");
