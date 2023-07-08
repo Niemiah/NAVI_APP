@@ -1,10 +1,13 @@
-package user;
-
+package user.impl;
+import user.IUserInterface;
+import user.IUserInputService;
+import user.IUserOutputService;
 import controller.service.INavService;
 import controller.service.impl.NavService;
 import bin.Graph;
 import bin.Node;
 import bin.Path;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -70,5 +73,17 @@ public class UserInterface implements IUserInterface {
                 .filter(node -> node.getId() == nodeNumber)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Node with id " + nodeNumber));
+    }
+
+    @Override
+    public Node getSourceNode() {
+        promptSourceNode(); //Prompts the user to select a source node
+        return getNodeFromUserInput();
+    }
+
+    @Override
+    public Node getDestinationNode() {
+        promptDestinationNode(); //Prompts the user to select a source node
+        return getNodeFromUserInput();
     }
 }
