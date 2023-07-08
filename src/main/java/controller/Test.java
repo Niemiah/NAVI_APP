@@ -1,17 +1,7 @@
 package controller;
 
-import bin.Edge;
-import bin.Graph;
-import bin.Node;
-import bin.Path;
-import controller.service.INavService;
-import controller.service.impl.NavService;
 import user.IUserInterface;
-import user.UserInterface;
-
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+import user.impl.UserInterface;
 
 // TODO
 //  Check main algo for correctness +++
