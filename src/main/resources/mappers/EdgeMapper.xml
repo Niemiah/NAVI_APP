@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.naviapp.db.implMyBatis.mappers.IEdgeMapper">
+    <select id="selectBySourceNodeId" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.IEdgeMapper.edgeResultMap">
+        SELECT id, distance
+        FROM Edges
+        WHERE source_node_id = #{id}
+    </select>
+    <select id="selectDestinationIdById" resultType="java.lang.Integer">
+        SELECT destination_node_id
+        FROM Edges
+        WHERE id = #{id}
+    </select>
+    <insert id="create">
+        INSERT INTO EDGES (source_node_id, destination_node_id, distance)
+        VALUES (#{source.id}, #{destination.id}, #{distance});
+    </insert>
+    <resultMap id="edgeResultMap" type="com.solvd.naviapp.bin.Edge" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="distance" column="distance"/>
+    </resultMap>
+</mapper>

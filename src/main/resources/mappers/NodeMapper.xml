@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper">
+    <select id= "selectById" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper.nodeResultMap">
+        SELECT  id, graphs_id, x_coord, y_coord
+        FROM Nodes
+        WHERE id = #{id}
+    </select>
+    <select id= "selectByGraphId" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper.nodeResultMap">
+        SELECT id, graphs_id, x_coord, y_coord
+        FROM Nodes
+        WHERE graphs_id = #{id}
+    </select>
+    <select id="selectByPathId" resultType="java.lang.Integer">
+        SELECT id
+        FROM Nodes
+        WHERE paths_id = #{id}
+        ORDER BY routes_index
+    </select>
+    <insert id="createWithGraphsId">
+        INSERT INTO Nodes (id, x_coord, y_coord, graphs_id)
+        VALUES (#{node.id}, #{node.x}, #{node.y}, #{graphsId})
+    </insert>
+    <update id="updateWithPath">
+        UPDATE Nodes
+        SET paths_id = #{pathId}, routes_index = #{routeIndex}
+        WHERE id = #{nodeId}
+    </update>
+    <resultMap id="nodeResultMap" type="com.solvd.naviapp.bin.Node" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="x" column="x_coord"/>
+        <result property="y" column ="y_coord"/>
+    </resultMap>
+</mapper>
