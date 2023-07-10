@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.naviapp.db.implMyBatis.mappers.IClientMapper">
+    <select id= "selectById" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.IClientMapper.clientResultMap">
+        SELECT id, name
+        FROM Clients
+        WHERE id = #{id}
+    </select>
+    <select id= "selectLastId" resultType="java.lang.Integer">
+        SELECT MAX(id)
+        FROM Clients;
+    </select>
+    <insert id= "create">
+        INSERT INTO Clients (name)
+        VALUES (#{name})
+    </insert>
+    <resultMap id="clientResultMap" type="com.solvd.naviapp.bin.Client" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+</mapper>
+
+
