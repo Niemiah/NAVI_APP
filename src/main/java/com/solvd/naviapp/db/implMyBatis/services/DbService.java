@@ -21,55 +21,66 @@ public class DbService implements IDbService {
 
     @Override
     public Client getClientById(int id) {
-        // getting basic client object
-        Client client = clientService.readFromDb(id);
-        // getting graphs created by the client
-        List<Graph> graphList = graphService.readFromDbByClientId(id);
-        graphList.forEach(graph -> {
-            // get nodes that belong to the graph
-            List <Node> nodeList = nodeService.readFromDbByGraphId(graph.getId());
-            graph.setNodes(nodeList);
-
-            // get path that belongs to the graph
-            Path path = pathService.readFromDbByGraphId(graph.getId());
-            path.setSource(nodeService.readFromDb(pathService.readFromDbSourceId(path.getId())));
-            path.setTarget(nodeService.readFromDb(pathService.readFromDbTargetId(path.getId())));
-            List<Integer> routeIdList = nodeService.readFromDbByPathId(path.getId());
-            List<Node> routeNodeList = new ArrayList<>();
-            routeIdList.forEach((nodeId)->{
-                routeNodeList.add(nodeService.readFromDb(nodeId));
+        Client client = null;
+        if (id > 1) {
+            // getting basic client object
+            client = clientService.readFromDb(id);
+            // getting graphs created by the client
+            List<Graph> graphList = graphService.readFromDbByClientId(id);
+            graphList.forEach(graph -> {
+                // get nodes that belong to the graph
+                List<Node> nodeList = nodeService.readFromDbByGraphId(graph.getId());
+                graph.setNodes(nodeList);
+                // get path that belongs to the graph
+                Path path = pathService.readFromDbByGraphId(graph.getId());
+                path.setSource(nodeService.readFromDb(pathService.readFromDbSourceId(path.getId())));
+                path.setTarget(nodeService.readFromDb(pathService.readFromDbTargetId(path.getId())));
+                List<Integer> routeIdList = nodeService.readFromDbByPathId(path.getId());
+                List<Node> routeNodeList = new ArrayList<>();
+                routeIdList.forEach((nodeId) -> {
+                    routeNodeList.add(nodeService.readFromDb(nodeId));
+                });
+                path.setNodeList(routeNodeList);
+                graph.setPath(path);
             });
-            path.setNodeList(routeNodeList);
-            graph.setPath(path);
-        });
-        client.setGraphList(graphList);
-        LOGGER.info("client retrieved");
+            client.setGraphList(graphList);
+            LOGGER.info("client retrieved");
+        } else {
+            LOGGER.error("invalid id argument");
+            throw new IllegalArgumentException("Id must be int >=1");
+        }
         return client;
     }
 
     @Override
     public int saveClient(Client client) {
-        Graph graph = client.getGraphList().get(0);
-        // inserting client
-        int clientId = clientService.writeToDb(client);
-        // inserting graph
-        int graphId = graphService.writeToDb(clientId);
-        // inserting nodes
-        graph.getNodes().forEach(node->{
-            int nodeId = nodeService.writeToDb(node, graphId);
-            node.setId(nodeId);
-        });
-        // inserting edges
-        graph.getNodes().forEach(node -> {
-            edgeService.writeToDb(node.getEdges());
-        });
-        // inserting path
-        int pathId = pathService.writeToDb(graph.getPath(), graphId);
-        graph.getPath().setId(pathId);
-        // updating nodes with path and index
-        nodeService.updateWithPath(graph.getPath());
-        // returns client id, so it can be queried upon next executions
-        LOGGER.info("client saved");
+        int clientId = -1;
+        if(client!=null) {
+            Graph graph = client.getGraphList().get(0);
+            // inserting client
+            clientId = clientService.writeToDb(client);
+            // inserting graph
+            int graphId = graphService.writeToDb(clientId);
+            // inserting nodes
+            graph.getNodes().forEach(node -> {
+                int nodeId = nodeService.writeToDb(node, graphId);
+                node.setId(nodeId);
+            });
+            // inserting edges
+            graph.getNodes().forEach(node -> {
+                edgeService.writeToDb(node.getEdges());
+            });
+            // inserting path
+            int pathId = pathService.writeToDb(graph.getPath(), graphId);
+            graph.getPath().setId(pathId);
+            // updating nodes with path and index
+            nodeService.updateWithPath(graph.getPath());
+            // returns client id, so it can be queried upon next executions
+            LOGGER.info("client saved");
+        } else {
+            LOGGER.error("invalid client argument");
+            throw new IllegalArgumentException("client must be initialized");
+        }
         return clientId;
     }
 }

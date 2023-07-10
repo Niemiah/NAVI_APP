@@ -30,20 +30,19 @@ public class NodeService implements INodeService {
         try (InputStream stream = Resources.getResourceAsStream(CONFIG);
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
-            IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
             node = nodeMapper.selectById(id);
-//            // new code
+            // new code
+//            IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
 //            List <Edge> edgeList = edgeMapper.selectBySourceNodeId(node.getId());
-//            Node finalNode = node;
-//            edgeList.forEach(edge -> {
-//                edge.setSource(finalNode);
+//            for (Edge edge: edgeList){
+//                edge.setSource(node);
 //                edge.setDestination(readFromDb(edgeMapper.selectDestinationIdById(edge.getId())));
-//            });
+//            }
 //            node.setEdges(edgeList);
+            LOGGER.info("node retrieved");
 
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
-            LOGGER.info("node selected");
         }
         return node;
     }
@@ -78,7 +77,7 @@ public class NodeService implements INodeService {
                     edge.setDestination(readFromDb(edgeMapper.selectDestinationIdById(edge.getId())));
                 });
                 node.setEdges(edgeList);
-                LOGGER.info("node selected");
+                LOGGER.info("node retrieved");
             }));
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
@@ -93,7 +92,7 @@ public class NodeService implements INodeService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
             nodeList = nodeMapper.selectByPathId(id);
-            LOGGER.info("node selected");
+            LOGGER.info("node retrieved");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }

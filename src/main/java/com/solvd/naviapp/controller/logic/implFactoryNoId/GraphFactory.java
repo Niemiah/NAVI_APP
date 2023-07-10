@@ -27,16 +27,15 @@ public class GraphFactory implements IGraphFactory {
         addMoreEdges(nodeList);
         return new Graph(nodeList);
     }
-
     // generates nodes w/o edges
     private List<Node> generateNodes() {
         List<Node> nodeList = new ArrayList<>();
-        for (int index : NODE_Indexes) {
+       NODE_Indexes.forEach((index)-> {
             int x = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
             int y = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
             Node node = new Node(x, y, Integer.toString(index));
             nodeList.add(node);
-        }
+        });
         return nodeList;
     }
 

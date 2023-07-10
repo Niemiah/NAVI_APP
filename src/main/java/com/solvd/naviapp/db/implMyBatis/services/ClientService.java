@@ -21,7 +21,6 @@ public class ClientService implements IClientService {
     private static final String CONFIG = "mybatis-config.xml";
     private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
 
-
     @Override
     public Client readFromDb(int id) {
         Client client = null;
@@ -29,7 +28,7 @@ public class ClientService implements IClientService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IClientMapper clientMapper = session.getMapper(IClientMapper.class);
             client = clientMapper.selectById(id);
-            LOGGER.info("client selected");
+            LOGGER.info("client retrieved");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
