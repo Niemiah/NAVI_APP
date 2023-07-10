@@ -1,4 +1,5 @@
 package user.impl;
+import com.solvd.naviapp.db.IDbService;
 import user.IUserInterface;
 import user.IUserInputService;
 import user.IUserOutputService;
@@ -6,6 +7,7 @@ import com.solvd.naviapp.db.IClientService;
 import com.solvd.naviapp.db.implMyBatis.services.ClientService;
 import com.solvd.naviapp.controller.services.INavService;
 import com.solvd.naviapp.controller.services.impl.NavService;
+import com.solvd.naviapp.db.implMyBatis.services.DbService;
 import com.solvd.naviapp.bin.Client;
 import com.solvd.naviapp.bin.Graph;
 import com.solvd.naviapp.bin.Node;
@@ -19,6 +21,7 @@ public class UserInterface implements IUserInterface {
     private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private final INavService navService;
     private final IClientService clientService;
+    private final IDbService dbService;
     private Graph graph;
     private Scanner scanner;
     private Client client;
@@ -31,6 +34,7 @@ public class UserInterface implements IUserInterface {
         LOGGER.info("Initializing UserInterface.");
         navService = new NavService();
         clientService = new ClientService();
+        dbService = new DbService();
         scanner = new Scanner(System.in);
     }
 
@@ -39,19 +43,20 @@ public class UserInterface implements IUserInterface {
         LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
         String userName = getUserName();
-        client = clientService.readFromDb(userName.hashCode());
+        client = dbService.getClientById(userName.hashCode());
         if (client == null) {
             LOGGER.info("Creating new client: {}", userName);
             client = new Client();
             client.setName(userName);
-            int clientId = clientService.writeToDb(client);
-            client = clientService.readFromDb(clientId);
+            int clientId = dbService.saveClient(client);
+            client = dbService.getClientById(clientId);
         }
         boolean isNewExecution = promptForExecutionType();
 
         if (isNewExecution) {
             graph = navService.getGraph();
             client.addGraph(graph);
+            dbService.saveClient(client);
             displayGraph();
         } else {
             graph = client.getGraphList().get(client.getGraphList().size() - 1);
@@ -134,5 +139,13 @@ public class UserInterface implements IUserInterface {
         for (Node node : nodes) {
             System.out.println("Node number " + node.getId() + " at coordinates (" + node.getX() + ", " + node.getY() + ")");
         }
+    }
+    private void displayConnections() {
+        System.out.println("Connections:");
+        graph.getNodes().forEach(node -> {
+            node.getEdges().forEach(edge -> {
+                System.out.println("Node " + node.getId() + " is connected to node " + edge.getDestination().getId() + "with a distance of " + edge.getDistance());
+            });
+        });
     }
 }
