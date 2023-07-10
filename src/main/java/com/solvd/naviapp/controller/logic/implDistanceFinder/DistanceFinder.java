@@ -1,4 +1,4 @@
-package com.solvd.naviapp.controller.logic.implFacotry;
+package com.solvd.naviapp.controller.logic.implDistanceFinder;
 import com.solvd.naviapp.controller.logic.IDistanceFinder;
 import com.solvd.naviapp.bin.Node;
 

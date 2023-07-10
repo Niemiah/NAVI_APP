@@ -9,7 +9,7 @@ import java.util.List;
 public interface INodeService extends IService<Node> {
     List<Node> readFromDbByGraphId(int id);
     List<Integer> readFromDbByPathId(int id);
-    int writeToDb(List<Node> nodesList, int graphsId);
+    int writeToDb(Node node, int graphsId);
     int updateWithPath(Path path);
 }
 

@@ -3,6 +3,7 @@ package com.solvd.naviapp.db.implMyBatis.services;
 import com.solvd.naviapp.bin.Edge;
 import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.bin.Path;
+import com.solvd.naviapp.db.IEdgeService;
 import com.solvd.naviapp.db.INodeService;
 import com.solvd.naviapp.db.implMyBatis.mappers.IEdgeMapper;
 import com.solvd.naviapp.db.implMyBatis.mappers.IGraphMapper;
@@ -29,9 +30,20 @@ public class NodeService implements INodeService {
         try (InputStream stream = Resources.getResourceAsStream(CONFIG);
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
+            IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
             node = nodeMapper.selectById(id);
+//            // new code
+//            List <Edge> edgeList = edgeMapper.selectBySourceNodeId(node.getId());
+//            Node finalNode = node;
+//            edgeList.forEach(edge -> {
+//                edge.setSource(finalNode);
+//                edge.setDestination(readFromDb(edgeMapper.selectDestinationIdById(edge.getId())));
+//            });
+//            node.setEdges(edgeList);
+
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
+            LOGGER.info("node selected");
         }
         return node;
     }
@@ -66,6 +78,7 @@ public class NodeService implements INodeService {
                     edge.setDestination(readFromDb(edgeMapper.selectDestinationIdById(edge.getId())));
                 });
                 node.setEdges(edgeList);
+                LOGGER.info("node selected");
             }));
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
@@ -80,6 +93,7 @@ public class NodeService implements INodeService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
             nodeList = nodeMapper.selectByPathId(id);
+            LOGGER.info("node selected");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
@@ -87,19 +101,19 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public int writeToDb(List<Node> nodesList, int graphsId) {
+    public int writeToDb(Node node, int graphsId) {
+        int nodeId = -1;
         try (InputStream stream = Resources.getResourceAsStream(CONFIG);
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
-            nodesList.forEach(node -> {
             nodeMapper.createWithGraphsId(node, graphsId);
             session.commit();
-                    });
-
+            nodeId = nodeMapper.selectLastId();
+            LOGGER.info("node inserted");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
-        return 1;
+        return nodeId;
     }
 
     @Override
@@ -111,6 +125,7 @@ public class NodeService implements INodeService {
             for(int index=0; index<nodeList.size(); index++) {
                 nodeMapper.updateWithPath(path.getId(), nodeList.get(index).getId(), index);
                 session.commit();
+                LOGGER.info("node updated");
             }
         } catch (IOException e) {
             LOGGER.info(e.getMessage());

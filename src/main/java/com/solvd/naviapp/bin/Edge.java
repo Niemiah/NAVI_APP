@@ -68,8 +68,10 @@ public class Edge {
     public String toString() {
         return "Edge{" +
                 "id=" + id +
-                ", source=" + source.getId() +
-                ", destination=" + destination.getId() +
+                ", sourceId=" + source.getId() +
+                ", sourceName=" + source.getName() +
+                ", destinationId=" + destination.getId() +
+                ", destinationName=" + destination.getName() +
                 ", weight=" + distance +
                 '}';
     }

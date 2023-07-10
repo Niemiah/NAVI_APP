@@ -5,6 +5,8 @@ import com.solvd.naviapp.bin.Graph;
 import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.bin.Path;
 import com.solvd.naviapp.db.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ public class DbService implements IDbService {
     private final INodeService nodeService = new NodeService();
     private final IPathService pathService = new PathService();
     private final IEdgeService edgeService = new EdgeService();
+    private static final Logger LOGGER = LogManager.getLogger(DbService.class);
 
     @Override
     public Client getClientById(int id) {
@@ -40,6 +43,7 @@ public class DbService implements IDbService {
             graph.setPath(path);
         });
         client.setGraphList(graphList);
+        LOGGER.info("client retrieved");
         return client;
     }
 
@@ -51,7 +55,10 @@ public class DbService implements IDbService {
         // inserting graph
         int graphId = graphService.writeToDb(clientId);
         // inserting nodes
-        nodeService.writeToDb(graph.getNodes(), graphId);
+        graph.getNodes().forEach(node->{
+            int nodeId = nodeService.writeToDb(node, graphId);
+            node.setId(nodeId);
+        });
         // inserting edges
         graph.getNodes().forEach(node -> {
             edgeService.writeToDb(node.getEdges());
@@ -61,6 +68,8 @@ public class DbService implements IDbService {
         graph.getPath().setId(pathId);
         // updating nodes with path and index
         nodeService.updateWithPath(graph.getPath());
+        // returns client id, so it can be queried upon next executions
+        LOGGER.info("client saved");
         return clientId;
     }
 }

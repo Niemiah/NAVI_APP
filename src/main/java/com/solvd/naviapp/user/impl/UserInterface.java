@@ -1,12 +1,11 @@
-package user.impl;
-import user.IUserInterface;
-import user.IUserInputService;
-import user.IUserOutputService;
-import controller.service.INavService;
-import controller.service.impl.NavService;
-import bin.Graph;
-import bin.Node;
-import bin.Path;
+package com.solvd.naviapp.user.impl;
+import com.solvd.naviapp.bin.Graph;
+import com.solvd.naviapp.bin.Node;
+import com.solvd.naviapp.bin.Path;
+import com.solvd.naviapp.controller.services.INavService;
+import com.solvd.naviapp.controller.services.impl.NavService;
+import com.solvd.naviapp.user.IUserInterface;
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -77,13 +76,13 @@ public class UserInterface implements IUserInterface {
 
     @Override
     public Node getSourceNode() {
-        promptSourceNode(); //Prompts the user to select a source node
+        promptSourceNode(); //Prompts the com.solvd.naviapp.user to select a source node
         return getNodeFromUserInput();
     }
 
     @Override
     public Node getDestinationNode() {
-        promptDestinationNode(); //Prompts the user to select a source node
+        promptDestinationNode(); //Prompts the com.solvd.naviapp.user to select a source node
         return getNodeFromUserInput();
     }
 }

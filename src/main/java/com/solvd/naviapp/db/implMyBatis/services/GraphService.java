@@ -27,6 +27,7 @@ public class GraphService implements IGraphService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IGraphMapper graphMapper = session.getMapper(IGraphMapper.class);
             graphList = graphMapper.selectByClientId(id);
+            LOGGER.info("graph selected");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
@@ -42,6 +43,7 @@ public class GraphService implements IGraphService {
             graphMapper.create(clientId);
             session.commit();
             graphId = graphMapper.selectLastId();
+            LOGGER.info("graph inserted");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }

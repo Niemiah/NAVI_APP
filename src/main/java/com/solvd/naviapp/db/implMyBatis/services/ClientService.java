@@ -29,6 +29,7 @@ public class ClientService implements IClientService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IClientMapper clientMapper = session.getMapper(IClientMapper.class);
             client = clientMapper.selectById(id);
+            LOGGER.info("client selected");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
@@ -50,6 +51,7 @@ public class ClientService implements IClientService {
             clientMapper.create(client);
             session.commit();
             clientId = clientMapper.selectLastId();
+            LOGGER.info("client inserted");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }

@@ -15,7 +15,7 @@
         WHERE id = #{id}
     </select>
     <insert id="create">
-        INSERT INTO EDGES (source_node_id, destination_node_id, distance)
+        INSERT INTO Edges (source_node_id, destination_node_id, distance)
         VALUES (#{source.id}, #{destination.id}, #{distance});
     </insert>
     <resultMap id="edgeResultMap" type="com.solvd.naviapp.bin.Edge" autoMapping="false">
