@@ -1,7 +1,6 @@
 package user;
-import bin.Path;
-import bin.Node;
+import com.solvd.naviapp.bin.Path;
+import com.solvd.naviapp.bin.Node;
 public interface IUserInputService {
-    Node getSourceNode();
-    Node getDestinationNode();
+    Node promptNode(String type); //Prompts the user to select a node
 }
