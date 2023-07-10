@@ -10,11 +10,13 @@ import com.solvd.naviapp.bin.Client;
 import com.solvd.naviapp.bin.Graph;
 import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.bin.Path;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface implements IUserInterface {
+    private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
     private final INavService navService;
     private final IClientService clientService;
     private Graph graph;
@@ -26,6 +28,7 @@ public class UserInterface implements IUserInterface {
     private final String goodbyeMessage = "Thank you for using the shortest path finder!";
 
     public UserInterface() {
+        LOGGER.info("Initializing UserInterface.");
         navService = new NavService();
         clientService = new ClientService();
         scanner = new Scanner(System.in);
@@ -33,13 +36,16 @@ public class UserInterface implements IUserInterface {
 
     @Override
     public void start() {
+        LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
         String userName = getUserName();
         client = clientService.readFromDb(userName.hashCode());
         if (client == null) {
+            LOGGER.info("Creating new client: {}", userName);
             client = new Client();
             client.setName(userName);
-            client = clientService.writeToDb(client);
+            int clientId = clientService.writeToDb(client);
+            client = clientService.readFromDb(clientId);
         }
         boolean isNewExecution = promptForExecutionType();
 
@@ -82,6 +88,7 @@ public class UserInterface implements IUserInterface {
     private Node getNodeFromUserInput() {
         String input = scanner.nextLine();
         if (input.equalsIgnoreCase("exit")) {
+            LOGGER.info("User requested exit. Exiting application");
             System.out.println("Exiting the application...");
             System.exit(0);
         }
@@ -90,10 +97,14 @@ public class UserInterface implements IUserInterface {
         return graph.getNodes().stream()
                 .filter(node -> node.getId() == nodeNumber)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Node with id " + nodeNumber));
-    } catch (NumberFormatException e) {
-        System.out.println("Invalid node number entered. Please try again.");
-        return getNodeFromUserInput();
+                .orElseThrow(() -> {
+                    LOGGER.error("Node with id {} not found.", nodeNumber);
+                    return new IllegalArgumentException("Node with id " + nodeNumber + " not found.");
+                });
+        } catch (NumberFormatException e) {
+            LOGGER.error("Invalid node number entered. Error: {}", e.getMessage());
+            System.out.println("Invalid node number entered. Please try again.");
+            return getNodeFromUserInput();
         }
     }
 
