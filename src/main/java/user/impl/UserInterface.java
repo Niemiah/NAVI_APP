@@ -42,12 +42,12 @@ public class UserInterface implements IUserInterface {
     public void start() {
         LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
-        String userId = getUserName();
-        client = dbService.getClientById(userId.hashCode());
+        int ClientId = getClientId();
+        client = dbService.getClientById(ClientId);
         if (client == null) {
-            LOGGER.info("Creating new client: {}", userId);
+            LOGGER.info("Creating new client: {}", ClientId);
             client = new Client();
-            client.setName(userId);
+            client.setId(getClientId());
             int clientId = dbService.saveClient(client);
             client = dbService.getClientById(clientId);
         }
@@ -68,6 +68,11 @@ public class UserInterface implements IUserInterface {
         displayRoute(path);
 
         displayGoodbyeMessage();
+    }
+
+    private int getClientId() {
+        System.out.println("Please enter your Client ID:");
+        return Integer.parseInt(scanner.nextLine());
     }
     //prompting user for their name
     private String getUserName() {

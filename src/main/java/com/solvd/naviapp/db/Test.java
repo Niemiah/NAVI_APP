@@ -50,6 +50,9 @@ public class Test {
         // Check if the indices are valid
         if (sourceIndex >= 0 && sourceIndex < graph.getNodes().size() &&
                 targetIndex >= 0 && targetIndex < graph.getNodes().size()) {
+        } else {
+            throw new IllegalArgumentException("Invalid source or target node index.");
+        }
 
             // Assign Source and Target Nodes
             Node source = graph.getNodes().get(sourceIndex);
@@ -68,8 +71,12 @@ public class Test {
 
             LOGGER.info("-------------------------------------------------------------");
 
+            // Added scanner input for a new client's name
+            LOGGER.info("Please enter your name: ");
+            String clientName = scanner.next();
+
             graph.setPath(path);
-            Client client = new Client("Sasha");
+            Client client = new Client(clientName); // Created new client with the name from the scanner input
             client.addGraph(graph);
 
             // saves Client to DB
@@ -95,6 +102,9 @@ public class Test {
             // Check if the indices are valid
             if (source2Index >= 0 && source2Index < graph2.getNodes().size() &&
                     target2Index >= 0 && target2Index < graph2.getNodes().size()) {
+            } else {
+                throw new IllegalArgumentException("Invalid source or target node index.");
+            }
 
                 Node source2 = graph2.getNodes().get(source2Index);
                 Node target2 = graph2.getNodes().get(target2Index);
@@ -111,10 +121,6 @@ public class Test {
 
                 // removes Client from DB
                 dbService.removeClient(clientId);
-            } else {
-                LOGGER.info("Invalid source or target node index.");
+                userInterface.displayGoodbyeMessage();
             }
-            userInterface.displayGoodbyeMessage();
         }
-    }
-}
