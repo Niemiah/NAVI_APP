@@ -7,8 +7,24 @@ import java.util.Objects;
 public class Node {
     private int id;
     private int x;
-    private  int y;
+    private int y;
+    private String name;
     private List<Edge> edges;
+
+    public Node(int id, int x, int y, String name) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.edges = new ArrayList<>();
+    }
+
+    public Node(int x, int y, String name) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.edges = new ArrayList<>();
+    }
 
     public Node(int id, int x, int y) {
         this.id = id;
@@ -48,6 +64,10 @@ public class Node {
         return y;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -64,6 +84,10 @@ public class Node {
         this.edges = edges;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -75,6 +99,7 @@ public class Node {
                 "id=" + id +
                 ", x=" + x +
                 ", y=" + y +
+                ", name='" + name + '\'' +
                 ", edges=" + edges +
                 '}';
     }

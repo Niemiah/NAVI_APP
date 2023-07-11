@@ -1,10 +1,11 @@
-package com.solvd.naviapp.controller.logic.implFacotry;
+package com.solvd.naviapp.controller.logic.implFacotryId;
 
 import com.solvd.naviapp.bin.Graph;
 import com.solvd.naviapp.controller.logic.IGraphFactory;
 import com.solvd.naviapp.controller.logic.IDistanceFinder;
 import com.solvd.naviapp.bin.Edge;
 import com.solvd.naviapp.bin.Node;
+import com.solvd.naviapp.controller.logic.implDistanceFinder.DistanceFinder;
 
 import java.util.*;
 

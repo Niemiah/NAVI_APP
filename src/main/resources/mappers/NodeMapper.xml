@@ -4,12 +4,12 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper">
     <select id= "selectById" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper.nodeResultMap">
-        SELECT  id, graphs_id, x_coord, y_coord
+        SELECT  id, name, graphs_id, x_coord, y_coord
         FROM Nodes
         WHERE id = #{id}
     </select>
     <select id= "selectByGraphId" resultMap= "com.solvd.naviapp.db.implMyBatis.mappers.INodeMapper.nodeResultMap">
-        SELECT id, graphs_id, x_coord, y_coord
+        SELECT id, name, graphs_id, x_coord, y_coord
         FROM Nodes
         WHERE graphs_id = #{id}
     </select>
@@ -19,9 +19,13 @@
         WHERE paths_id = #{id}
         ORDER BY routes_index
     </select>
+    <select id= "selectLastId" resultType="java.lang.Integer">
+        SELECT MAX(id)
+        FROM Nodes;
+    </select>
     <insert id="createWithGraphsId">
-        INSERT INTO Nodes (id, x_coord, y_coord, graphs_id)
-        VALUES (#{node.id}, #{node.x}, #{node.y}, #{graphsId})
+        INSERT INTO Nodes (name, x_coord, y_coord, graphs_id)
+        VALUES (#{node.name}, #{node.x}, #{node.y}, #{graphsId})
     </insert>
     <update id="updateWithPath">
         UPDATE Nodes
@@ -32,5 +36,6 @@
         <id property="id" column="id"/>
         <result property="x" column="x_coord"/>
         <result property="y" column ="y_coord"/>
+        <result property="name" column="name"/>
     </resultMap>
 </mapper>
