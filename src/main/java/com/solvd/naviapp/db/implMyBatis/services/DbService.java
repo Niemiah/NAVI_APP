@@ -18,7 +18,7 @@ public class DbService implements IDbService {
 
     @Override
     public Client getClientById(int id) {
-        Client client = null;
+        Client client;
         if (id >= 1) {
             // getting basic client object
             client = clientService.readFromDb(id);
@@ -69,7 +69,7 @@ public class DbService implements IDbService {
 
     @Override
     public int saveClient(Client client) {
-        int clientId = -1;
+        int clientId;
         if(client!=null) {
             Graph graph = client.getGraphList().get(0);
             // inserting client
@@ -108,6 +108,34 @@ public class DbService implements IDbService {
             LOGGER.error("invalid id argument");
             throw new IllegalArgumentException("Id must be int >=1");
          }
+        return 1;
+    }
+
+    @Override
+    public int addGraphToClient(Graph graph, int clientId) {
+        if (graph != null && clientId >= 1) {
+            // inserting graph
+            int graphId = graphService.writeToDb(clientId);
+            // inserting nodes
+            graph.getNodes().forEach(node -> {
+                int nodeId = nodeService.writeToDb(node, graphId);
+                node.setId(nodeId);
+            });
+            // inserting edges
+            graph.getNodes().forEach(node -> {
+                edgeService.writeToDb(node.getEdges());
+            });
+            // inserting path
+            int pathId = pathService.writeToDb(graph.getPath(), graphId);
+            graph.getPath().setId(pathId);
+            // updating nodes with path and index
+            nodeService.updateWithPath(graph.getPath());
+            // returns client id, so it can be queried upon next executions
+            LOGGER.info("graph saved");
+        } else {
+            LOGGER.error("invalid client argument");
+            throw new IllegalArgumentException("graph must be initialized and Id must be int >=1");
+        }
         return 1;
     }
 }
