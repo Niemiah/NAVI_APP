@@ -28,7 +28,7 @@ public class EdgeService implements IEdgeService {
             IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
             edge = edgeMapper.selectById(id);
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return edge;
     }
@@ -41,9 +41,8 @@ public class EdgeService implements IEdgeService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
             destinationId = edgeMapper.selectDestinationIdById(id);
-            LOGGER.info("edge retrieved");
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return destinationId;
     }
@@ -56,7 +55,6 @@ public class EdgeService implements IEdgeService {
             edgeList.forEach(edge -> {
                 edgeMapper.create(edge);
                 session.commit();
-                LOGGER.info("edge inserted");
             });
 
         } catch (IOException e) {
@@ -72,7 +70,6 @@ public class EdgeService implements IEdgeService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
             edgeList = edgeMapper.selectBySourceNodeId(id);
-            LOGGER.info("edge retrieved");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }

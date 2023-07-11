@@ -7,9 +7,8 @@ import com.solvd.naviapp.controller.logic.IGraphFactory;
 
 import com.solvd.naviapp.controller.logic.IPathAlgorithm;
 import com.solvd.naviapp.controller.logic.implDijkstra.PathAlgorithm;
-import com.solvd.naviapp.controller.logic.implFacotryId.GraphFactory;
+import com.solvd.naviapp.controller.logic.implFactoryNoId.GraphFactory;
 import com.solvd.naviapp.controller.services.INavService;
-import com.solvd.naviapp.db.implMyBatis.services.DbService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

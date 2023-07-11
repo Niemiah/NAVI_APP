@@ -1,5 +1,4 @@
 package com.solvd.naviapp.db.implMyBatis.services;
-
 import com.solvd.naviapp.bin.*;
 import com.solvd.naviapp.db.*;
 import org.apache.logging.log4j.LogManager;
@@ -7,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class DbService implements IDbService {
     private final IClientService clientService = new ClientService();
     private final IGraphService graphService = new GraphService();
@@ -24,15 +22,15 @@ public class DbService implements IDbService {
             client = clientService.readFromDb(id);
             // getting graphs created by the client
             List<Graph> graphList = graphService.readFromDbByClientId(id);
+            // get nodes that belong to the graph (adds edges with nodes)
             graphList.forEach(graph -> {
-                // get nodes that belong to the graph
                 List<Node> nodeList = nodeService.readFromDbByGraphId(graph.getId());
                 graph.setNodes(nodeList);
                 // get path that belongs to the graph
                 Path path = pathService.readFromDbByGraphId(graph.getId());
                 Node sourceNode = nodeService.readFromDb(pathService.readFromDbSourceId(path.getId()));
                 Node targetNode = nodeService.readFromDb(pathService.readFromDbTargetId(path.getId()));
-                List <Edge> sourceNodeEdges = edgeService.readFromDbBySourceNodeId(sourceNode.getId());
+                List<Edge> sourceNodeEdges = edgeService.readFromDbBySourceNodeId(sourceNode.getId());
                 sourceNodeEdges.forEach(edge -> {
                     edge.setSource(sourceNode);
                     edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
@@ -40,7 +38,7 @@ public class DbService implements IDbService {
 
                 sourceNode.setEdges(sourceNodeEdges);
 
-                List <Edge> targetNodeEdges = edgeService.readFromDbBySourceNodeId(targetNode.getId());
+                List<Edge> targetNodeEdges = edgeService.readFromDbBySourceNodeId(targetNode.getId());
                 targetNodeEdges.forEach(edge -> {
                     edge.setSource(sourceNode);
                     edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
@@ -63,6 +61,9 @@ public class DbService implements IDbService {
         } else {
             LOGGER.error("invalid id argument");
             throw new IllegalArgumentException("Id must be int >=1");
+        }
+        if (client == null) {
+            LOGGER.error("no such client");
         }
         return client;
     }

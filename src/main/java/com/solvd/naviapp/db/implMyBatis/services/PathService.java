@@ -30,9 +30,8 @@ public class PathService implements IPathService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IPathMapper pathMapper = session.getMapper(IPathMapper.class);
             path = pathMapper.selectByGraphId(id);
-            LOGGER.info("path retrieved");
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return path;
     }
@@ -44,9 +43,8 @@ public class PathService implements IPathService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IPathMapper pathMapper = session.getMapper(IPathMapper.class);
             sourceId = pathMapper.selectSourceById(id);
-            LOGGER.info("path retrieved");
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return sourceId;
     }
@@ -58,9 +56,8 @@ public class PathService implements IPathService {
                  SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
                 IPathMapper pathMapper = session.getMapper(IPathMapper.class);
                 targetId = pathMapper.selectTargetById(id);
-                LOGGER.info("path retrieved");
             } catch (IOException e) {
-                LOGGER.info(e.getMessage());
+                LOGGER.error(e.getMessage());
             }
             return targetId;
         }
@@ -74,9 +71,8 @@ public class PathService implements IPathService {
             pathMapper.createWithGraphsId(path, graphId);
             session.commit();
             pathId = pathMapper.selectLastId();
-            LOGGER.info("path retrieved");
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return pathId;
     }
