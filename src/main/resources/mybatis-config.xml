@@ -2,6 +2,7 @@
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
     <environments default = "development">
         <environment id = "development">
@@ -10,7 +11,7 @@
                 <property name = "driver" value = "com.mysql.cj.jdbc.Driver"/>
                 <property name = "url" value = "jdbc:mysql://127.0.0.1:3306/NAVI_APP"/>
                 <property name = "username" value = "root"/>
-                <property name = "password" value = "FAKE"/>
+                <property name = "password" value = "@Linda8879"/>
             </dataSource>
         </environment>
     </environments>
