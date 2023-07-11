@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface IEdgeMapper extends IMapper<Edge>{
     List<Edge> selectBySourceNodeId(int id);
+    List<Integer> selectDestinationIdBySourceId(int id);
     int selectDestinationIdById(int id);
 }
