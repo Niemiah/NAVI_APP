@@ -38,6 +38,7 @@ public class UserInterface implements IUserInterface {
         scanner = new Scanner(System.in);
     }
 
+    //initializing the UserInterface
     @Override
     public void start() {
         LOGGER.info("Starting the UserInterface.");
@@ -68,12 +69,12 @@ public class UserInterface implements IUserInterface {
         displayRoute(path);
         displayGoodbyeMessage();
     }
-
+//prompting user for their name
     private String getUserName() {
         System.out.println("Please enter your name:");
         return scanner.nextLine();
     }
-
+//checks if user is already in the database and allows them to start a new execution
     private boolean promptForExecutionType() {
         System.out.println("Would you like to start a new execution? (Y/N)");
         String input = scanner.nextLine();
@@ -86,6 +87,7 @@ public class UserInterface implements IUserInterface {
             return promptForExecutionType();
         }
     }
+    //
     private void promptNodeMessage(String type) {
         System.out.println("Please select a " + type + " node from the list above by entering the node's number:");
     }
