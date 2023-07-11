@@ -15,60 +15,6 @@ public class DbService implements IDbService {
     private static final Logger LOGGER = LogManager.getLogger(DbService.class);
 
     @Override
-    public Client getClientById(int id) {
-        Client client;
-        if (id >= 1) {
-            // getting basic client object
-            client = clientService.readFromDb(id);
-            // getting graphs created by the client
-            List<Graph> graphList = graphService.readFromDbByClientId(id);
-            // get nodes that belong to the graph (adds edges with nodes)
-            graphList.forEach(graph -> {
-                List<Node> nodeList = nodeService.readFromDbByGraphId(graph.getId());
-                graph.setNodes(nodeList);
-                // get path that belongs to the graph
-                Path path = pathService.readFromDbByGraphId(graph.getId());
-                Node sourceNode = nodeService.readFromDb(pathService.readFromDbSourceId(path.getId()));
-                Node targetNode = nodeService.readFromDb(pathService.readFromDbTargetId(path.getId()));
-                List<Edge> sourceNodeEdges = edgeService.readFromDbBySourceNodeId(sourceNode.getId());
-                sourceNodeEdges.forEach(edge -> {
-                    edge.setSource(sourceNode);
-                    edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
-                });
-
-                sourceNode.setEdges(sourceNodeEdges);
-
-                List<Edge> targetNodeEdges = edgeService.readFromDbBySourceNodeId(targetNode.getId());
-                targetNodeEdges.forEach(edge -> {
-                    edge.setSource(sourceNode);
-                    edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
-                });
-
-                targetNode.setEdges(targetNodeEdges);
-
-                path.setSource(sourceNode);
-                path.setTarget(targetNode);
-                List<Integer> routeIdList = nodeService.readFromDbByPathId(path.getId());
-                List<Node> routeNodeList = new ArrayList<>();
-                routeIdList.forEach((nodeId) -> {
-                    routeNodeList.add(nodeService.readFromDb(nodeId));
-                });
-                path.setNodeList(routeNodeList);
-                graph.setPath(path);
-            });
-            client.setGraphList(graphList);
-            LOGGER.info("client retrieved");
-        } else {
-            LOGGER.error("invalid id argument");
-            throw new IllegalArgumentException("Id must be int >=1");
-        }
-        if (client == null) {
-            LOGGER.error("no such client");
-        }
-        return client;
-    }
-
-    @Override
     public int saveClient(Client client) {
         int clientId;
         if(client!=null) {
@@ -110,6 +56,45 @@ public class DbService implements IDbService {
             throw new IllegalArgumentException("Id must be int >=1");
          }
         return 1;
+    }
+
+    public Client getClientById(int id) {
+        Client client;
+        if (id >= 1) {
+            // getting basic client object
+            client = clientService.readFromDb(id);
+            // getting graphs created by the client
+            List<Graph> graphList = graphService.readFromDbByClientId(id);
+            // populating graphs
+            graphList.forEach(graph -> {
+                // setting nodes with reference type fields
+                List<Node> nodeList = nodeService.readFromDbByGraphId(graph.getId());
+                graph.setNodes(nodeList);
+                // setting path with reference type fields
+                Path path = pathService.readFromDbByGraphId(graph.getId());
+                // setting nodes
+                path.setSource(nodeService.readFromDb(pathService.readFromDbSourceId(path.getId())));
+                path.setTarget(nodeService.readFromDb(pathService.readFromDbTargetId(path.getId())));
+
+                // setting route list
+                List<Integer> routeIdList = nodeService.readFromDbByPathId(path.getId());
+                List<Node> routeNodeList = new ArrayList<>();
+                routeIdList.forEach((nodeId) -> {
+                    routeNodeList.add(nodeService.readFromDb(nodeId));
+                });
+                path.setNodeList(routeNodeList);
+                graph.setPath(path);
+            });
+            client.setGraphList(graphList);
+            LOGGER.info("client retrieved");
+        } else {
+            LOGGER.error("invalid id argument");
+            throw new IllegalArgumentException("Id must be int >=1");
+        }
+        if (client == null) {
+            LOGGER.error("no such client");
+        }
+        return client;
     }
 
     @Override

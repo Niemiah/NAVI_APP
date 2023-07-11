@@ -1,7 +1,6 @@
-package user.impl;
+package com.solvd.naviapp.user.impl;
 import com.solvd.naviapp.db.IDbService;
-import user.IUserInterface;
-import user.IUserOutputService;
+import com.solvd.naviapp.user.IUserInterface;
 import com.solvd.naviapp.db.IClientService;
 import com.solvd.naviapp.db.implMyBatis.services.ClientService;
 import com.solvd.naviapp.controller.services.INavService;
@@ -74,12 +73,12 @@ public class UserInterface implements IUserInterface {
         System.out.println("Please enter your Client ID:");
         return Integer.parseInt(scanner.nextLine());
     }
-    //prompting user for their name
+    //prompting com.solvd.naviapp.user for their name
     private String getUserName() {
         System.out.println("Please enter your name:");
         return scanner.nextLine();
     }
-    //checks if user is already in the database and allows them to start a new execution
+    //checks if com.solvd.naviapp.user is already in the database and allows them to start a new execution
     private boolean promptForExecutionType() {
         System.out.println("Would you like to start a new execution? (Y/N)");
         String input = scanner.nextLine();

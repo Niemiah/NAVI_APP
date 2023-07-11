@@ -1,6 +1,5 @@
-package user;
+package com.solvd.naviapp.user;
 import com.solvd.naviapp.bin.Path;
-import com.solvd.naviapp.bin.Node;
 
 public interface IUserOutputService {
     void displayWelcomeMessage(); //Displays a welcome message

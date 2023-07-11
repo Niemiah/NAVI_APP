@@ -1,4 +1,4 @@
-package com.solvd.naviapp.controller.logic.implFactoryNoId;
+package com.solvd.naviapp.controller.logic.implFactory;
 
 import com.solvd.naviapp.bin.Edge;
 import com.solvd.naviapp.bin.Graph;
