@@ -56,6 +56,7 @@ public class Node {
         return id == node.id && Objects.equals(edges, node.edges);
     }
 
+
     public int getX() {
         return x;
     }

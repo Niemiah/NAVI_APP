@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class GraphFactory implements IGraphFactory {
     public static final List<Integer> NODE_Indexes
-            = List.of(0, 1, 2, 3, 4);
+            = List.of(0, 1, 2, 3, 4, 5);
     public static final int XY_UPPER_BOUND = 51; // exclusive
     public static final int XY_LOWER_BOUND = 10; // inclusive
     public static final IDistanceFinder distanceFinder = new DistanceFinder();
