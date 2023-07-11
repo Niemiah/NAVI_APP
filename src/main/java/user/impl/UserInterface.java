@@ -38,7 +38,7 @@ public class UserInterface implements IUserInterface {
         scanner = new Scanner(System.in);
     }
 
-    //initializing the UserInterface
+    //Starting the UserInterface
     @Override
     public void start() {
         LOGGER.info("Starting the UserInterface.");
@@ -67,6 +67,7 @@ public class UserInterface implements IUserInterface {
         Node destinationNode = promptNode("destination");
         Path path = navService.getPath(sourceNode, destinationNode, graph);
         displayRoute(path);
+
         displayGoodbyeMessage();
     }
 //prompting user for their name
@@ -86,6 +87,12 @@ public class UserInterface implements IUserInterface {
             System.out.println("Invalid input. Please try again.");
             return promptForExecutionType();
         }
+    }
+
+    //displays the Welcome Message
+    @Override
+    public void displayWelcomeMessage() {
+        System.out.println(welcomeMessage);
     }
     //
     private void promptNodeMessage(String type) {
@@ -119,11 +126,6 @@ public class UserInterface implements IUserInterface {
     public Node promptNode(String type) {
         promptNodeMessage(type);
         return getNodeFromUserInput();
-    }
-
-    @Override
-    public void displayWelcomeMessage() {
-        System.out.println(welcomeMessage);
     }
 
     @Override
