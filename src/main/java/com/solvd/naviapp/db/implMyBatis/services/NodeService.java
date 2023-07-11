@@ -31,14 +31,6 @@ public class NodeService implements INodeService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             INodeMapper nodeMapper = session.getMapper(INodeMapper.class);
             node = nodeMapper.selectById(id);
-            // new code
-//            IEdgeMapper edgeMapper = session.getMapper(IEdgeMapper.class);
-//            List <Edge> edgeList = edgeMapper.selectBySourceNodeId(node.getId());
-//            for (Edge edge: edgeList){
-//                edge.setSource(node);
-//                edge.setDestination(readFromDb(edgeMapper.selectDestinationIdById(edge.getId())));
-//            }
-//            node.setEdges(edgeList);
             LOGGER.info("node retrieved");
 
         } catch (IOException e) {

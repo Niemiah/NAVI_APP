@@ -28,7 +28,6 @@ public class ClientService implements IClientService {
              SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
             IClientMapper clientMapper = session.getMapper(IClientMapper.class);
             client = clientMapper.selectById(id);
-            LOGGER.info("client retrieved");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }
@@ -38,7 +37,15 @@ public class ClientService implements IClientService {
 
     @Override
     public int removeFromDb(int id) {
-        throw new UnsupportedOperationException("method not implemented");
+        try (InputStream stream = Resources.getResourceAsStream(CONFIG);
+             SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
+            IClientMapper clientMapper = session.getMapper(IClientMapper.class);
+            clientMapper.delete(id);
+            session.commit();
+        } catch (IOException e) {
+            LOGGER.info(e.getMessage());
+        }
+        return 1;
     }
 
     @Override
@@ -50,7 +57,6 @@ public class ClientService implements IClientService {
             clientMapper.create(client);
             session.commit();
             clientId = clientMapper.selectLastId();
-            LOGGER.info("client inserted");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
         }

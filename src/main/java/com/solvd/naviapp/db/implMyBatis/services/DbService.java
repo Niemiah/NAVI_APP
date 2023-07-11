@@ -1,9 +1,6 @@
 package com.solvd.naviapp.db.implMyBatis.services;
 
-import com.solvd.naviapp.bin.Client;
-import com.solvd.naviapp.bin.Graph;
-import com.solvd.naviapp.bin.Node;
-import com.solvd.naviapp.bin.Path;
+import com.solvd.naviapp.bin.*;
 import com.solvd.naviapp.db.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +19,7 @@ public class DbService implements IDbService {
     @Override
     public Client getClientById(int id) {
         Client client = null;
-        if (id > 1) {
+        if (id >= 1) {
             // getting basic client object
             client = clientService.readFromDb(id);
             // getting graphs created by the client
@@ -33,8 +30,26 @@ public class DbService implements IDbService {
                 graph.setNodes(nodeList);
                 // get path that belongs to the graph
                 Path path = pathService.readFromDbByGraphId(graph.getId());
-                path.setSource(nodeService.readFromDb(pathService.readFromDbSourceId(path.getId())));
-                path.setTarget(nodeService.readFromDb(pathService.readFromDbTargetId(path.getId())));
+                Node sourceNode = nodeService.readFromDb(pathService.readFromDbSourceId(path.getId()));
+                Node targetNode = nodeService.readFromDb(pathService.readFromDbTargetId(path.getId()));
+                List <Edge> sourceNodeEdges = edgeService.readFromDbBySourceNodeId(sourceNode.getId());
+                sourceNodeEdges.forEach(edge -> {
+                    edge.setSource(sourceNode);
+                    edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
+                });
+
+                sourceNode.setEdges(sourceNodeEdges);
+
+                List <Edge> targetNodeEdges = edgeService.readFromDbBySourceNodeId(targetNode.getId());
+                targetNodeEdges.forEach(edge -> {
+                    edge.setSource(sourceNode);
+                    edge.setDestination(nodeService.readFromDb(edgeService.readFromDbDestinationId(edge.getId())));
+                });
+
+                targetNode.setEdges(targetNodeEdges);
+
+                path.setSource(sourceNode);
+                path.setTarget(targetNode);
                 List<Integer> routeIdList = nodeService.readFromDbByPathId(path.getId());
                 List<Node> routeNodeList = new ArrayList<>();
                 routeIdList.forEach((nodeId) -> {
@@ -82,5 +97,17 @@ public class DbService implements IDbService {
             throw new IllegalArgumentException("client must be initialized");
         }
         return clientId;
+    }
+
+    @Override
+    public int removeClient(int id) {
+        if (id >= 1) {
+            clientService.removeFromDb(id);
+            LOGGER.info("client removed");
+        } else {
+            LOGGER.error("invalid id argument");
+            throw new IllegalArgumentException("Id must be int >=1");
+         }
+        return 1;
     }
 }

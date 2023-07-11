@@ -1,6 +1,8 @@
 package com.solvd.naviapp;
 
 import com.solvd.naviapp.bin.Client;
+import com.solvd.naviapp.bin.Graph;
+import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.controller.logic.IGraphFactory;
 import com.solvd.naviapp.controller.logic.IPathAlgorithm;
 import com.solvd.naviapp.controller.logic.implDijkstra.PathAlgorithm;
@@ -15,8 +17,6 @@ public class main {
         IPathAlgorithm pathAlgorithm = new PathAlgorithm();
         Client client = new Client();
 
-        System.out.println(graphFactory.generateGraph());
-
 //         creating graph, path, client
 //        Graph graph =graphFactory.generateGraph();
 //        Node source = graph.getNodes().get(0);
@@ -28,5 +28,7 @@ public class main {
 //        System.out.println(client);
 //        System.out.println(dbService.saveClient(client));
 //        System.out.println(dbService.getClientById(1));
+        System.out.println(dbService.removeClient(2));
+        System.out.println(dbService.removeClient(3));
     }
 }
