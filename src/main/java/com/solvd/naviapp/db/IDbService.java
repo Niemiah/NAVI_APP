@@ -7,4 +7,6 @@ import com.solvd.naviapp.bin.Path;
 public interface IDbService {
     Client getClientById(int id);
     int saveClient(Client client);
+    int removeClient(int id);
+    int addGraphToClient(Graph graph, int clientId);
 }

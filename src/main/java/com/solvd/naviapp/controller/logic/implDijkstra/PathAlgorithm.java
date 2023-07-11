@@ -21,13 +21,13 @@ public class PathAlgorithm implements IPathAlgorithm {
         Path pathObject = null;
 
         // Step 1: Initialize distances to infinity except for the source node
-        for (Node node : graph.getNodes()) {
-            if (node == source) {
-                distanceMap.put(node, 0);
-            } else {
-                distanceMap.put(node, Integer.MAX_VALUE);
-            }
-        }
+       graph.getNodes().forEach(node->{
+           if (node == source) {
+               distanceMap.put(node, 0);
+           } else {
+               distanceMap.put(node, Integer.MAX_VALUE);
+           }
+       });
 
         // Step 2: Process nodes
         while (visitedNodes.size() < graph.getNodes().size()) {
@@ -44,7 +44,7 @@ public class PathAlgorithm implements IPathAlgorithm {
             // Step 3: Update distances for neighboring nodes
 
             // iterate over list of edges of current node
-            for (Edge edge : current.getEdges()) {
+            current.getEdges().forEach((edge -> {
                 // get neighbor node from the edge object
                 Node neighbor = edge.getDestination();
                 int weight = edge.getDistance();
@@ -54,7 +54,7 @@ public class PathAlgorithm implements IPathAlgorithm {
                     distanceMap.put(neighbor, newDistance);
                     parentMap.put(neighbor, current);
                 }
-            }
+            }));
         }
 
         // Step 4: Print shortest paths and distances

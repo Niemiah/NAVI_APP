@@ -21,7 +21,6 @@ public class ClientService implements IClientService {
     private static final String CONFIG = "mybatis-config.xml";
     private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
 
-
     @Override
     public Client readFromDb(int id) {
         Client client = null;
@@ -38,7 +37,15 @@ public class ClientService implements IClientService {
 
     @Override
     public int removeFromDb(int id) {
-        throw new UnsupportedOperationException("method not implemented");
+        try (InputStream stream = Resources.getResourceAsStream(CONFIG);
+             SqlSession session = new SqlSessionFactoryBuilder().build(stream).openSession()) {
+            IClientMapper clientMapper = session.getMapper(IClientMapper.class);
+            clientMapper.delete(id);
+            session.commit();
+        } catch (IOException e) {
+            LOGGER.info(e.getMessage());
+        }
+        return 1;
     }
 
     @Override
