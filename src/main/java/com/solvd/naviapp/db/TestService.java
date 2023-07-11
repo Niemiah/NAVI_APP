@@ -25,6 +25,5 @@ public class TestService {
         int id = dbService.saveClient(client);
         Client clientRetrieved = dbService.getClientById(id);
         System.out.println(clientRetrieved);
-
     }
 }
