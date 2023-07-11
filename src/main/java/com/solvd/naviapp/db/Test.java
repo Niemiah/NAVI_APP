@@ -42,10 +42,12 @@ public class Test {
 
         // Get source and target node from the user
         Scanner scanner = new Scanner(System.in);
-        LOGGER.info("Enter the source node: ");
+        LOGGER.info("Enter the source node (Enter 9 to exit): ");
         int sourceIndex = scanner.nextInt();
-        LOGGER.info("Enter the target node: ");
+        if (sourceIndex == 9) System.exit(0);
+        LOGGER.info("Enter the target node (Enter 9 to exit): ");
         int targetIndex = scanner.nextInt();
+        if (targetIndex == 9) System.exit(0);
 
         // Check if the indices are valid
         if (sourceIndex >= 0 && sourceIndex < graph.getNodes().size() &&
@@ -72,8 +74,9 @@ public class Test {
             LOGGER.info("-------------------------------------------------------------");
 
             // Added scanner input for a new client's name
-            LOGGER.info("Please enter your name: ");
+            LOGGER.info("Please enter your name (Enter 9 to exit): ");
             String clientName = scanner.next();
+            if (clientName.equals("9")) System.exit(0);
 
             graph.setPath(path);
             Client client = new Client(clientName); // Created new client with the name from the scanner input
@@ -94,10 +97,12 @@ public class Test {
             // creates new Graph
             Graph graph2 = navService.getGraph();
             // Get source2 and target2 nodes from the user
-            LOGGER.info("Enter the source2 node: ");
+            LOGGER.info("Enter the source2 node (Enter 9 to exit): ");
             int source2Index = scanner.nextInt();
-            LOGGER.info("Enter the target2 node: ");
+            if (source2Index == 9) System.exit(0);
+            LOGGER.info("Enter the target2 node (Enter 9 to exit): ");
             int target2Index = scanner.nextInt();
+            if (target2Index == 9) System.exit(0);
 
             // Check if the indices are valid
             if (source2Index >= 0 && source2Index < graph2.getNodes().size() &&
