@@ -29,7 +29,7 @@ public class ClientService implements IClientService {
             IClientMapper clientMapper = session.getMapper(IClientMapper.class);
             client = clientMapper.selectById(id);
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return client;
     }
@@ -43,7 +43,7 @@ public class ClientService implements IClientService {
             clientMapper.delete(id);
             session.commit();
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return 1;
     }
@@ -58,7 +58,7 @@ public class ClientService implements IClientService {
             session.commit();
             clientId = clientMapper.selectLastId();
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return clientId;
     }

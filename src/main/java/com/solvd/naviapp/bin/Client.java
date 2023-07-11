@@ -12,6 +12,11 @@ public class Client {
         this.graphList = new ArrayList<>();
     }
 
+    public Client(String name) {
+        this.name = name;
+        this.graphList = new ArrayList<>();
+    }
+
     public int getId() {
         return id;
     }

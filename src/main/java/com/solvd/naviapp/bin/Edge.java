@@ -48,7 +48,8 @@ public class Edge {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Edge edge = (Edge) o;
-        return distance == edge.distance && Objects.equals(source, edge.source) && Objects.equals(destination, edge.destination);
+        return distance == edge.distance && Objects.equals(source.getId(), edge.source.getId())
+                && Objects.equals(destination.getId(), edge.destination.getId());
     }
 
     public int getId() {
