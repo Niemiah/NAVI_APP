@@ -86,22 +86,22 @@ public class UserInterface implements IUserInterface {
         }
         boolean isNewExecution = promptForExecutionType();
 
-        if (isNewExecution) {
-            graph = navService.getGraph();
-            client.addGraph(graph);
-            dbService.saveClient(client);
-            displayGraph();
-        } else {
-            graph = client.getGraphList().get(client.getGraphList().size() - 1);
-            displayGraph();
-        }
+//        if (isNewExecution) {
+//            graph = navService.getGraph();
+//            client.addGraph(graph);
+//            dbService.saveClient(client);
+//            displayGraph();
+//        } else {
+//            graph = client.getGraphList().get(client.getGraphList().size() - 1);
+//            displayGraph();
+//        }
         Node sourceNode = promptNode("source");
         Node destinationNode = promptNode("destination");
-        Path path = navService.getPath(sourceNode, destinationNode, graph);
-        displayRoute(path);
-
-        displayGoodbyeMessage();
-    }
+//        Path path = navService.getPath(sourceNode, destinationNode, graph);
+//        displayRoute(path);
+//
+//        displayGoodbyeMessage();
+//    }
 
     private int getClientId() {
         System.out.println("Please enter your Client ID:");
