@@ -10,8 +10,8 @@ import com.solvd.naviapp.db.implMyBatis.services.DbService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Test {
-    private static final Logger LOGGER = LogManager.getLogger(Test.class);
+public class TestShow {
+    private static final Logger LOGGER = LogManager.getLogger(TestShow.class);
 
     public static void main(String[] args) {
         INavService navService = new NavService();
@@ -30,7 +30,8 @@ public class Test {
                 LOGGER.info("Edge: from "+
                         edge.getSource().getName()+
                         " to "
-                        +edge.getDestination().getName());
+                        +edge.getDestination().getName()+
+                        " Distance: "+edge.getDistance());
             });
         }));
         LOGGER.info("-------------------------------------------------------------");
@@ -47,7 +48,7 @@ public class Test {
                 " has distance: "+path.getDistance());
         LOGGER.info("Route:");
         path.getNodeList().forEach(node -> {
-            LOGGER.info(node.getName());
+            LOGGER.info(" Node: "+node.getName());
         });
 
         LOGGER.info("-------------------------------------------------------------");
