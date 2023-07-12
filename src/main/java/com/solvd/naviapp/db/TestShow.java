@@ -82,7 +82,7 @@ public class TestShow {
         LOGGER.info("Client name: "+clientRetrieved.getName()+" id: "+clientRetrieved.getId());
         clientRetrieved2.getGraphList().forEach(graph1 -> {
             LOGGER.info("graph id: "+graph1.getId());
-            });
+        });
 
         // removes Client from DB
         dbService.removeClient(clientId);
