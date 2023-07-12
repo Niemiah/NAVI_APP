@@ -2,6 +2,7 @@ package user.impl;
 import com.solvd.naviapp.db.IDbService;
 import user.IUserInterface;
 import user.IUserOutputService;
+import user.IUserInputService;
 import com.solvd.naviapp.db.IClientService;
 import com.solvd.naviapp.db.implMyBatis.services.ClientService;
 import com.solvd.naviapp.controller.services.INavService;
@@ -42,12 +43,44 @@ public class UserInterface implements IUserInterface {
     public void start() {
         LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
-        int ClientId = getClientId();
-        client = dbService.getClientById(ClientId);
-        if (client == null) {
-            LOGGER.info("Creating new client: {}", ClientId);
-            client = new Client();
-            client.setId(getClientId());
+        System.out.println("Are you a new or existing user? press 1 for New User or 2 for Existing User");
+        int userType = scanner.nextInt();
+
+        switch(userType) {
+            case 1:
+                //new user
+                String name = getUserName();
+                client = new Client(name);
+                Graph graph = navService.getGraph();
+                graph.getNodes().forEach((node -> {
+                    LOGGER.info("Node: name "+node.getName()+
+                            ", x, y coordinates: " +
+                            node.getX()+" " +
+                            node.getY());
+
+                    node.getEdges().forEach((edge) ->{
+                        LOGGER.info("Edge: from "+
+                                edge.getSource().getName()+
+                                " to "
+                                +edge.getDestination().getName());
+                    });
+                }));
+
+                int clientId = dbService.saveClient(client);
+                break;
+            case 2:
+                //existing user
+                int ClientId = getClientId();
+                client = dbService.getClientById(ClientId);
+                if (client == null) {
+                    LOGGER.error("Client with id {} not found.", ClientId);
+                    return;
+                }
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.");
+                return;
+        }
             int clientId = dbService.saveClient(client);
             client = dbService.getClientById(clientId);
         }
@@ -125,6 +158,7 @@ public class UserInterface implements IUserInterface {
             return getNodeFromUserInput();
         }
     }
+    @Override
     public Node promptNode(String type) {
         promptNodeMessage(type);
         return getNodeFromUserInput();
