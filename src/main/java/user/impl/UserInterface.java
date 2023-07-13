@@ -131,46 +131,65 @@ public class UserInterface implements IUserInterface {
         int savedClientId = dbService.saveClient(client);
         client = dbService.getClientById(savedClientId);
 
-        displayRoute(path);
         displayGoodbyeMessage();
     }
 
     private void handleNewUser() {
         String name = getUserName();
         client = new Client(name);
-        this.graph = navService.getGraph();
 
-        graph.getNodes().forEach((node -> {
-            LOGGER.info("Node: name "+node.getName()+
-                    ", x, y coordinates: " +
-                    node.getX()+" " +
-                    node.getY());
+        while (true) {
+            this.graph = navService.getGraph();
 
-            node.getEdges().forEach((edge) ->{
-                LOGGER.info("Edge: from "+
-                        edge.getSource().getName()+
-                        " to "
-                        +edge.getDestination().getName());
+            graph.getNodes().forEach((node -> {
+                LOGGER.info("Node: name "+node.getName()+
+                        ", x, y coordinates: " +
+                        node.getX()+" " +
+                        node.getY());
+
+                node.getEdges().forEach((edge) ->{
+                    LOGGER.info("Edge: from "+
+                            edge.getSource().getName()+
+                            " to "
+                            +edge.getDestination().getName());
+                });
+            }));
+
+            Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
+            Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
+            Path path = navService.getPath(source, target, graph);
+            LOGGER.info("Shortest path from "+
+                    path.getSource().getName()+
+                    " to "+path.getTarget().getName()+
+                    " has distance: "+path.getDistance());
+            LOGGER.info("Route:");
+            path.getNodeList().forEach(node -> {
+                LOGGER.info(node.getName());
             });
-        }));
 
-        Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
-        Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
-        Path path = navService.getPath(source, target, graph);
-        LOGGER.info("Shortest path from "+
-                path.getSource().getName()+
-                " to "+path.getTarget().getName()+
-                " has distance: "+path.getDistance());
-        LOGGER.info("Route:");
-        path.getNodeList().forEach(node -> {
-            LOGGER.info(node.getName());
-        });
+            graph.setPath(path);
+            client.addGraph(graph);
 
-        graph.setPath(path);
-        client.addGraph(graph);
+            System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
+            int userInput = scanner.nextInt();
+            scanner.nextLine();
 
-        int clientId = dbService.saveClient(client);
-        client = dbService.getClientById(clientId);
+            switch(userInput) {
+                case 1: // Save the graph
+                    int clientId = dbService.saveClient(client);
+                    client = dbService.getClientById(clientId);
+                    break;
+                case 2: // Delete and restart
+                    client.getGraphList().clear();
+                    continue;
+                case 9: // Exit the loop
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    continue; // Continue the loop if invalid input
+            }
+            break; // End the loop after saving or invalid input
+        }
     }
 
     private int getClientId() {
