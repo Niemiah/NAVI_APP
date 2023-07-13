@@ -11,7 +11,7 @@
                 <property name = "driver" value = "com.mysql.cj.jdbc.Driver"/>
                 <property name = "url" value = "jdbc:mysql://127.0.0.1:3306/NAVI_APP"/>
                 <property name = "username" value = "root"/>
-                <property name = "password" value = "@Linda8879"/>
+                <property name = "password" value = "root"/>
             </dataSource>
         </environment>
     </environments>
