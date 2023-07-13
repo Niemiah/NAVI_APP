@@ -1,21 +1,19 @@
-package user.impl;
+package com.solvd.naviapp.user.impl;
+import com.solvd.naviapp.bin.*;
 import com.solvd.naviapp.db.IDbService;
-import user.IUserInterface;
-import user.IUserOutputService;
-import user.IUserInputService;
+import com.solvd.naviapp.user.IUserInterface;
+import com.solvd.naviapp.user.IUserOutputService;
+import com.solvd.naviapp.user.IUserInputService;
 import com.solvd.naviapp.db.IClientService;
 import com.solvd.naviapp.db.implMyBatis.services.ClientService;
 import com.solvd.naviapp.controller.services.INavService;
 import com.solvd.naviapp.controller.services.impl.NavService;
 import com.solvd.naviapp.db.implMyBatis.services.DbService;
-import com.solvd.naviapp.bin.Client;
-import com.solvd.naviapp.bin.Graph;
-import com.solvd.naviapp.bin.Node;
-import com.solvd.naviapp.bin.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class UserInterface implements IUserInterface {
     private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
@@ -94,23 +92,19 @@ public class UserInterface implements IUserInterface {
 
         System.out.println("Welcome back " + client.getName() + "!");
 
-//        graph = client.getGraphList().get(client.getGraphList().size() - 1);
-//        displayGraph();
-
         this.graph = navService.getGraph();
 
         graph.getNodes().forEach((node -> {
-            LOGGER.info("Node: name "+node.getName()+
-                    ", x, y coordinates: " +
-                    node.getX()+" " +
-                    node.getY());
+            LOGGER.info("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
+            List<Edge> el = node.getEdges();
+            Edge e1 = el.get(0);
+            Edge e2 = el.get(1);
+            Edge e3 = el.get(2);
+            LOGGER.info("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
+                    " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
+                    " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
+            );
 
-            node.getEdges().forEach((edge) ->{
-                LOGGER.info("Edge: from "+
-                        edge.getSource().getName()+
-                        " to "
-                        +edge.getDestination().getName());
-            });
         }));
 
         Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
@@ -120,10 +114,17 @@ public class UserInterface implements IUserInterface {
                 path.getSource().getName()+
                 " to "+path.getTarget().getName()+
                 " has distance: "+path.getDistance());
-        LOGGER.info("Route:");
-        path.getNodeList().forEach(node -> {
-            LOGGER.info(node.getName());
-        });
+
+        String route = path.getNodeList().stream()
+                .map(node -> node.getName() + " --> ")
+                .collect(Collectors.joining());
+
+        // Removing the last arrow and space
+        if (!route.isEmpty()) {
+            route = route.substring(0, route.length() - 5);
+        }
+
+        LOGGER.info("Route: " + route);
 
         graph.setPath(path);
         client.addGraph(graph);
@@ -142,17 +143,16 @@ public class UserInterface implements IUserInterface {
             this.graph = navService.getGraph();
 
             graph.getNodes().forEach((node -> {
-                LOGGER.info("Node: name "+node.getName()+
-                        ", x, y coordinates: " +
-                        node.getX()+" " +
-                        node.getY());
+                LOGGER.info("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
+                List<Edge> el = node.getEdges();
+                Edge e1 = el.get(0);
+                Edge e2 = el.get(1);
+                Edge e3 = el.get(2);
+                LOGGER.info("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
+                        " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
+                        " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
+                );
 
-                node.getEdges().forEach((edge) ->{
-                    LOGGER.info("Edge: from "+
-                            edge.getSource().getName()+
-                            " to "
-                            +edge.getDestination().getName());
-                });
             }));
 
             Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
@@ -161,11 +161,18 @@ public class UserInterface implements IUserInterface {
             LOGGER.info("Shortest path from "+
                     path.getSource().getName()+
                     " to "+path.getTarget().getName()+
-                    " has distance: "+path.getDistance());
-            LOGGER.info("Route:");
-            path.getNodeList().forEach(node -> {
-                LOGGER.info(node.getName());
-            });
+                    " has a distance of: "+path.getDistance());
+
+            String route = path.getNodeList().stream()
+                    .map(node -> node.getName() + " --> ")
+                    .collect(Collectors.joining());
+
+            // Removing the last arrow and space
+            if (!route.isEmpty()) {
+                route = route.substring(0, route.length() - 5);
+            }
+
+            LOGGER.info("Route: " + route);
 
             graph.setPath(path);
             client.addGraph(graph);
@@ -281,3 +288,4 @@ public class UserInterface implements IUserInterface {
         });
     }
 }
+

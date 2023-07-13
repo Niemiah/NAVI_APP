@@ -1,4 +1,4 @@
-package user;
+package com.solvd.naviapp.user;
 import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.bin.Path;
 

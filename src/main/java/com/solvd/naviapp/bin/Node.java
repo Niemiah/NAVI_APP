@@ -91,7 +91,7 @@ public class Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, x, y);
     }
 
     @Override
