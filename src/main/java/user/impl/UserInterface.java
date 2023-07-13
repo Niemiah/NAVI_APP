@@ -32,10 +32,10 @@ public class UserInterface implements IUserInterface {
 
     public UserInterface() {
         LOGGER.info("Initializing UserInterface.");
-        navService = new NavService();
-        clientService = new ClientService();
-        dbService = new DbService();
-        scanner = new Scanner(System.in);
+        this.navService = new NavService();
+        this.clientService = new ClientService();
+        this.dbService = new DbService();
+        this.scanner = new Scanner(System.in);
     }
 
     //Starting the UserInterface
@@ -43,48 +43,29 @@ public class UserInterface implements IUserInterface {
     public void start() {
         LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
-        System.out.println("Are you a new or existing user? press 1 for New User or 2 for Existing User");
-        int userType = scanner.nextInt();
 
-        switch(userType) {
-            case 1:
-                //new user
-                String name = getUserName();
-                client = new Client(name);
-                Graph graph = navService.getGraph();
-                graph.getNodes().forEach((node -> {
-                    LOGGER.info("Node: name "+node.getName()+
-                            ", x, y coordinates: " +
-                            node.getX()+" " +
-                            node.getY());
+        while(true) { // Add loop for user input validity check
+            System.out.println("Are you a new or existing user? press 1 for New User or 2 for Existing User");
+            int userType = scanner.nextInt();
+            scanner.nextLine();
 
-                    node.getEdges().forEach((edge) ->{
-                        LOGGER.info("Edge: from "+
-                                edge.getSource().getName()+
-                                " to "
-                                +edge.getDestination().getName());
-                    });
-                }));
-
-                int clientId = dbService.saveClient(client);
-                break;
-            case 2:
-                //existing user
-                int ClientId = getClientId();
-                client = dbService.getClientById(ClientId);
-                if (client == null) {
-                    LOGGER.error("Client with id {} not found.", ClientId);
-                    return;
-                }
-                break;
-            default:
-                System.out.println("Invalid option. Please try again.");
-                return;
+            switch(userType) {
+                case 1:
+                    //new user
+                    handleNewUser();
+                    break;
+                case 2:
+                    //existing user
+                    handleExistingUser();
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    continue; // Continue the loop if invalid input
+            }
+            break; // Break the loop if valid input
         }
-            int clientId = dbService.saveClient(client);
-            client = dbService.getClientById(clientId);
-        }
-        boolean isNewExecution = promptForExecutionType();
+    }
+//        boolean isNewExecution = promptForExecutionType();
 
 //        if (isNewExecution) {
 //            graph = navService.getGraph();
@@ -95,13 +76,102 @@ public class UserInterface implements IUserInterface {
 //            graph = client.getGraphList().get(client.getGraphList().size() - 1);
 //            displayGraph();
 //        }
-        Node sourceNode = promptNode("source");
-        Node destinationNode = promptNode("destination");
+
 //        Path path = navService.getPath(sourceNode, destinationNode, graph);
 //        displayRoute(path);
 //
 //        displayGoodbyeMessage();
 //    }
+
+
+    private void handleExistingUser() {
+        int existingClientId = getClientId();
+        client = dbService.getClientById(existingClientId);
+        if (client == null) {
+            LOGGER.error("Client with id {} not found.", existingClientId);
+            return;
+        }
+
+        System.out.println("Welcome back " + client.getName() + "!");
+
+//        graph = client.getGraphList().get(client.getGraphList().size() - 1);
+//        displayGraph();
+
+        this.graph = navService.getGraph();
+
+        graph.getNodes().forEach((node -> {
+            LOGGER.info("Node: name "+node.getName()+
+                    ", x, y coordinates: " +
+                    node.getX()+" " +
+                    node.getY());
+
+            node.getEdges().forEach((edge) ->{
+                LOGGER.info("Edge: from "+
+                        edge.getSource().getName()+
+                        " to "
+                        +edge.getDestination().getName());
+            });
+        }));
+
+        Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
+        Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
+        Path path = navService.getPath(source, target, graph);
+        LOGGER.info("Shortest path from "+
+                path.getSource().getName()+
+                " to "+path.getTarget().getName()+
+                " has distance: "+path.getDistance());
+        LOGGER.info("Route:");
+        path.getNodeList().forEach(node -> {
+            LOGGER.info(node.getName());
+        });
+
+        graph.setPath(path);
+        client.addGraph(graph);
+
+        int savedClientId = dbService.saveClient(client);
+        client = dbService.getClientById(savedClientId);
+
+        displayRoute(path);
+        displayGoodbyeMessage();
+    }
+
+    private void handleNewUser() {
+        String name = getUserName();
+        client = new Client(name);
+        this.graph = navService.getGraph();
+
+        graph.getNodes().forEach((node -> {
+            LOGGER.info("Node: name "+node.getName()+
+                    ", x, y coordinates: " +
+                    node.getX()+" " +
+                    node.getY());
+
+            node.getEdges().forEach((edge) ->{
+                LOGGER.info("Edge: from "+
+                        edge.getSource().getName()+
+                        " to "
+                        +edge.getDestination().getName());
+            });
+        }));
+
+        Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
+        Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
+        Path path = navService.getPath(source, target, graph);
+        LOGGER.info("Shortest path from "+
+                path.getSource().getName()+
+                " to "+path.getTarget().getName()+
+                " has distance: "+path.getDistance());
+        LOGGER.info("Route:");
+        path.getNodeList().forEach(node -> {
+            LOGGER.info(node.getName());
+        });
+
+        graph.setPath(path);
+        client.addGraph(graph);
+
+        int clientId = dbService.saveClient(client);
+        client = dbService.getClientById(clientId);
+    }
 
     private int getClientId() {
         System.out.println("Please enter your Client ID:");
@@ -137,25 +207,28 @@ public class UserInterface implements IUserInterface {
     }
 
     private Node getNodeFromUserInput() {
-        String input = scanner.nextLine();
-        if (input.equalsIgnoreCase("exit")) {
+        String nodeName = scanner.nextLine().trim();
+
+        // If the user wants to exit
+        if (nodeName.equalsIgnoreCase("exit")) {
             LOGGER.info("User requested exit. Exiting application");
             System.out.println("Exiting the application...");
             System.exit(0);
         }
+
+        // Find the node with the given name
         try {
-            int nodeNumber = scanner.nextInt();
             return graph.getNodes().stream()
-                    .filter(node -> node.getId() == nodeNumber)
+                    .filter(node -> node.getName().equalsIgnoreCase(nodeName))
                     .findFirst()
                     .orElseThrow(() -> {
-                        LOGGER.error("Node with id {} not found.", nodeNumber);
-                        return new IllegalArgumentException("Node with id " + nodeNumber + " not found.");
+                        LOGGER.error("Node with name {} not found.", nodeName);
+                        return new IllegalArgumentException("Node with name " + nodeName + " not found.");
                     });
-        } catch (NumberFormatException e) {
-            LOGGER.error("Invalid node number entered. Error: {}", e.getMessage());
-            System.out.println("Invalid node number entered. Please try again.");
-            return getNodeFromUserInput();
+        } catch (Exception e) {
+            LOGGER.error("Invalid node name entered. Error: {}", e.getMessage());
+            System.out.println("Invalid node name entered. Please try again.");
+            return getNodeFromUserInput();  // If the node name is invalid, prompt again
         }
     }
     @Override
