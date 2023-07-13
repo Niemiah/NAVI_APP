@@ -15,8 +15,8 @@ import java.util.Random;
 public class GraphFactory implements IGraphFactory {
     public static final List<Integer> NODE_Indexes
             = List.of(0, 1, 2, 3, 4, 5);
-    public static final int XY_UPPER_BOUND = 51; // exclusive
-    public static final int XY_LOWER_BOUND = 10; // inclusive
+    public static final int XY_UPPER_BOUND =21; // exclusive
+    public static final int XY_LOWER_BOUND = 5; // inclusive
     public static final IDistanceFinder distanceFinder = new DistanceFinder();
     public static final Random random = new Random();
 
@@ -29,14 +29,16 @@ public class GraphFactory implements IGraphFactory {
     }
     // generates nodes w/o edges
     private List<Node> generateNodes() {
-        List<Node> nodeList = new ArrayList<>();
-       NODE_Indexes.forEach((index)-> {
-            int x = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
-            int y = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
-            Node node = new Node(x, y, Integer.toString(index));
-            nodeList.add(node);
-        });
-        return nodeList;
+        HashSet<Node> nodeHashSet = new HashSet<>();
+        while (nodeHashSet.size() < NODE_Indexes.size()) {
+            NODE_Indexes.forEach(index -> {
+                int x = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
+                int y = random.nextInt(XY_UPPER_BOUND - XY_LOWER_BOUND) + XY_LOWER_BOUND;
+                Node node = new Node(x, y, Integer.toString(index));
+                nodeHashSet.add(node);
+            });
+        }
+        return new ArrayList<>(nodeHashSet);
     }
 
     // connects all nodes together

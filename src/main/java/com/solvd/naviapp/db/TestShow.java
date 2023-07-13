@@ -1,14 +1,13 @@
 package com.solvd.naviapp.db;
 
-import com.solvd.naviapp.bin.Client;
-import com.solvd.naviapp.bin.Graph;
-import com.solvd.naviapp.bin.Node;
-import com.solvd.naviapp.bin.Path;
+import com.solvd.naviapp.bin.*;
 import com.solvd.naviapp.controller.services.INavService;
 import com.solvd.naviapp.controller.services.impl.NavService;
 import com.solvd.naviapp.db.implMyBatis.services.DbService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class TestShow {
     private static final Logger LOGGER = LogManager.getLogger(TestShow.class);
@@ -21,18 +20,16 @@ public class TestShow {
         Graph graph = navService.getGraph();
         // prints Nodes of the graph
         graph.getNodes().forEach((node -> {
-            LOGGER.info("Node: name "+node.getName()+
-                    ", x, y coordinates: " +
-                    node.getX()+" " +
-                    node.getY());
+            LOGGER.info("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
+            List<Edge> el = node.getEdges();
+            Edge e1 = el.get(0);
+            Edge e2 = el.get(1);
+            Edge e3 = el.get(2);
+            LOGGER.info("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
+                    " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
+                    " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
+            );
 
-            node.getEdges().forEach((edge) ->{
-                LOGGER.info("Edge: from "+
-                        edge.getSource().getName()+
-                        " to "
-                        +edge.getDestination().getName()+
-                        " Distance: "+edge.getDistance());
-            });
         }));
         LOGGER.info("-------------------------------------------------------------");
 
