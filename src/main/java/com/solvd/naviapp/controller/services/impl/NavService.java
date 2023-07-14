@@ -19,7 +19,7 @@ public class NavService implements INavService {
     public Graph getGraph() {
         IGraphFactory nodeFactory = new GraphFactory();
         Graph graph = nodeFactory.generateGraph();
-        System.out.println("graph generated");
+        LOGGER.info("graph generated");
         return graph;
     }
 
@@ -33,7 +33,7 @@ public class NavService implements INavService {
 
             IPathAlgorithm iPathAlgorithm = new PathAlgorithm();
             path = iPathAlgorithm.getPath(graph, source, target);
-            System.out.println("path generated");
+            LOGGER.info("path generated");
         }
         return path;
     }

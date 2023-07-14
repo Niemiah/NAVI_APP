@@ -2,8 +2,6 @@ package com.solvd.naviapp.user.impl;
 import com.solvd.naviapp.bin.*;
 import com.solvd.naviapp.db.IDbService;
 import com.solvd.naviapp.user.IUserInterface;
-import com.solvd.naviapp.user.IUserOutputService;
-import com.solvd.naviapp.user.IUserInputService;
 import com.solvd.naviapp.db.IClientService;
 import com.solvd.naviapp.db.implMyBatis.services.ClientService;
 import com.solvd.naviapp.controller.services.INavService;
@@ -15,8 +13,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class UserInterface implements IUserInterface {
-    private static final Logger LOGGER = LogManager.getLogger(UserInterface.class);
+public class View implements IUserInterface {
+    private static final Logger LOGGER = LogManager.getLogger(View.class);
     private final INavService navService;
     private final IClientService clientService;
     private final IDbService dbService;
@@ -28,7 +26,7 @@ public class UserInterface implements IUserInterface {
     private final String welcomeMessage = "WELCOME TO THE SHORTEST PATH FINDER!";
     private final String goodbyeMessage = "THANK YOU FOR USING THE SHORTEST PATH FINDER!";
 
-    public UserInterface() {
+    public View() {
         this.navService = new NavService();
         this.clientService = new ClientService();
         this.dbService = new DbService();
