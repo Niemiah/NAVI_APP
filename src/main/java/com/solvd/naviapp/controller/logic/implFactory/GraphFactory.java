@@ -6,11 +6,9 @@ import com.solvd.naviapp.bin.Node;
 import com.solvd.naviapp.controller.logic.IDistanceFinder;
 import com.solvd.naviapp.controller.logic.IGraphFactory;
 import com.solvd.naviapp.controller.logic.implDistanceFinder.DistanceFinder;
+import com.solvd.naviapp.utilities.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GraphFactory implements IGraphFactory {
     public static final List<Integer> NODE_Indexes
@@ -39,7 +37,9 @@ public class GraphFactory implements IGraphFactory {
                 nodeHashSet.add(node);
             });
         }
-        return new ArrayList<>(nodeHashSet);
+        List<Node> nodeList = new ArrayList<>(nodeHashSet);
+        Utilities.nodeSort(nodeList);
+        return  nodeList;
     }
 
     // connects all nodes together
