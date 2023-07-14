@@ -115,26 +115,34 @@ public class UserInterface implements IUserInterface {
             graph.setPath(path);
             client.addGraph(graph);
 
-            System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
-            int userInput = scanner.nextInt();
-            scanner.nextLine();
+            while (true) {
+                System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
+                String userInput = scanner.nextLine();
 
-            switch(userInput) {
-                case 1: // Save the graph
-                    int savedClientId = dbService.saveClient(client);
-                    displayGoodbyeMessage();
+                try {
+                    int userOption = Integer.parseInt(userInput);
+
+                    switch(userOption) {
+                        case 1:
+                            int savedClientId = dbService.saveClient(client);
+                            displayGoodbyeMessage();
+                            break;
+                        case 2:
+                            client.getGraphList().clear();
+                            continue;
+                        case 9:
+                            displayGoodbyeMessage();
+                            return;
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                            continue;
+                    }
                     break;
-                case 2: // Delete and restart
-                    client.getGraphList().clear();
-                    continue;
-                case 9: // Exit the loop
-                    displayGoodbyeMessage();
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    continue; // Continue the loop if invalid input
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please try again.");
+                }
             }
-            break; // End the loop after saving or invalid input
+            break;
         }
     }
 
@@ -180,25 +188,33 @@ public class UserInterface implements IUserInterface {
             graph.setPath(path);
             client.addGraph(graph);
 
-            System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
-            int userInput = scanner.nextInt();
-            scanner.nextLine();
+            while (true) {
+                System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
+                String userInput = scanner.nextLine();
 
-            switch(userInput) {
-                case 1: // Save the graph
-                    int clientId = dbService.saveClient(client);
+                try {
+                    int userOption = Integer.parseInt(userInput);
+
+                    switch(userOption) {
+                        case 1:
+                            int clientId = dbService.saveClient(client);
+                            break;
+                        case 2:
+                            client.getGraphList().clear();
+                            continue;
+                        case 9:
+                            displayGoodbyeMessage();
+                            return;
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                            continue;
+                    }
                     break;
-                case 2: // Delete and restart
-                    client.getGraphList().clear();
-                    continue;
-                case 9: // Exit the loop
-                    displayGoodbyeMessage();
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    continue; // Continue the loop if invalid input
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please try again.");
+                }
             }
-            break; // End the loop after saving or invalid input
+            break;
         }
     }
 

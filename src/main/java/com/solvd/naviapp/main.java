@@ -13,7 +13,6 @@ public class main {
 
     public static void main(String[] args) {
         UserInterface userInterface = new UserInterface();
-        Scanner scanner = new Scanner(System.in);
 
         userInterface.start();
     }
