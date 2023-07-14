@@ -38,7 +38,7 @@ public class DbService implements IDbService {
             // updating nodes with path and index
             nodeService.updateWithPath(graph.getPath());
             // returns client id, so it can be queried upon next executions
-            LOGGER.info("client saved");
+            System.out.println("client saved");
         } else {
             LOGGER.error("invalid client argument");
             throw new IllegalArgumentException("client must be initialized");
@@ -86,7 +86,7 @@ public class DbService implements IDbService {
                 graph.setPath(path);
             });
             client.setGraphList(graphList);
-            LOGGER.info("client retrieved");
+            System.out.println("client retrieved");
         } else {
             LOGGER.error("invalid id argument");
             throw new IllegalArgumentException("Id must be int >=1");

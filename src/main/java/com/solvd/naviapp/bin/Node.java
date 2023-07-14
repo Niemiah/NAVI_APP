@@ -104,4 +104,8 @@ public class Node {
                 ", edges=" + edges +
                 '}';
     }
+
+    public <T> Comparable<T> getIndex() {
+        return null;
+    }
 }

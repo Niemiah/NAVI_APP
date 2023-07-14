@@ -25,11 +25,10 @@ public class UserInterface implements IUserInterface {
     private Client client;
 
     //welcome and goodbye messages
-    private final String welcomeMessage = "Welcome to the shortest path finder!";
-    private final String goodbyeMessage = "Thank you for using the shortest path finder!";
+    private final String welcomeMessage = "WELCOME TO THE SHORTEST PATH FINDER!";
+    private final String goodbyeMessage = "THANK YOU FOR USING THE SHORTEST PATH FINDER!";
 
     public UserInterface() {
-        LOGGER.info("Initializing UserInterface.");
         this.navService = new NavService();
         this.clientService = new ClientService();
         this.dbService = new DbService();
@@ -37,49 +36,35 @@ public class UserInterface implements IUserInterface {
     }
 
     //Starting the UserInterface
-    @Override
     public void start() {
-        LOGGER.info("Starting the UserInterface.");
         displayWelcomeMessage();
 
-        while(true) { // Add loop for user input validity check
+        while(true) {
             System.out.println("Are you a new or existing user? press 1 for New User or 2 for Existing User");
-            int userType = scanner.nextInt();
-            scanner.nextLine();
+            String userInput = scanner.nextLine(); // read input as string
 
-            switch(userType) {
-                case 1:
-                    //new user
-                    handleNewUser();
-                    break;
-                case 2:
-                    //existing user
-                    handleExistingUser();
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    continue; // Continue the loop if invalid input
+            try {
+                int userType = Integer.parseInt(userInput); // try to parse string to integer
+
+                switch(userType) {
+                    case 1:
+                        //new user
+                        handleNewUser();
+                        break;
+                    case 2:
+                        //existing user
+                        handleExistingUser();
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                        continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please try again."); // handle non-integer input
             }
-            break; // Break the loop if valid input
         }
     }
-//        boolean isNewExecution = promptForExecutionType();
-
-//        if (isNewExecution) {
-//            graph = navService.getGraph();
-//            client.addGraph(graph);
-//            dbService.saveClient(client);
-//            displayGraph();
-//        } else {
-//            graph = client.getGraphList().get(client.getGraphList().size() - 1);
-//            displayGraph();
-//        }
-
-//        Path path = navService.getPath(sourceNode, destinationNode, graph);
-//        displayRoute(path);
-//
-//        displayGoodbyeMessage();
-//    }
 
 
     private void handleExistingUser() {
@@ -92,47 +77,65 @@ public class UserInterface implements IUserInterface {
 
         System.out.println("Welcome back " + client.getName() + "!");
 
-        this.graph = navService.getGraph();
+        while (true) {
+            this.graph = navService.getGraph();
 
-        graph.getNodes().forEach((node -> {
-            LOGGER.info("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
-            List<Edge> el = node.getEdges();
-            Edge e1 = el.get(0);
-            Edge e2 = el.get(1);
-            Edge e3 = el.get(2);
-            LOGGER.info("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
-                    " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
-                    " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
-            );
+            graph.getNodes().forEach((node -> {
+                System.out.println("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
+                List<Edge> el = node.getEdges();
+                Edge e1 = el.get(0);
+                Edge e2 = el.get(1);
+                Edge e3 = el.get(2);
+                System.out.println("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
+                        " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
+                        " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
+                );
+                System.out.println("");  // This is the new line you're adding
+            }));
 
-        }));
+            Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
+            Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
+            Path path = navService.getPath(source, target, graph);
+            System.out.println("Shortest path from "+
+                    path.getSource().getName()+
+                    " to "+path.getTarget().getName()+
+                    " has distance: "+path.getDistance());
 
-        Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
-        Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
-        Path path = navService.getPath(source, target, graph);
-        LOGGER.info("Shortest path from "+
-                path.getSource().getName()+
-                " to "+path.getTarget().getName()+
-                " has distance: "+path.getDistance());
+            String route = path.getNodeList().stream()
+                    .map(node -> node.getName() + " --> ")
+                    .collect(Collectors.joining());
 
-        String route = path.getNodeList().stream()
-                .map(node -> node.getName() + " --> ")
-                .collect(Collectors.joining());
+            // Removing the last arrow and space
+            if (!route.isEmpty()) {
+                route = route.substring(0, route.length() - 5);
+            }
 
-        // Removing the last arrow and space
-        if (!route.isEmpty()) {
-            route = route.substring(0, route.length() - 5);
+            System.out.println("Route: " + route);
+
+            graph.setPath(path);
+            client.addGraph(graph);
+
+            System.out.println("Enter 1 to save the graph, 2 to delete and restart, or 9 to exit:");
+            int userInput = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(userInput) {
+                case 1: // Save the graph
+                    int savedClientId = dbService.saveClient(client);
+                    displayGoodbyeMessage();
+                    break;
+                case 2: // Delete and restart
+                    client.getGraphList().clear();
+                    continue;
+                case 9: // Exit the loop
+                    displayGoodbyeMessage();
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    continue; // Continue the loop if invalid input
+            }
+            break; // End the loop after saving or invalid input
         }
-
-        LOGGER.info("Route: " + route);
-
-        graph.setPath(path);
-        client.addGraph(graph);
-
-        int savedClientId = dbService.saveClient(client);
-        client = dbService.getClientById(savedClientId);
-
-        displayGoodbyeMessage();
     }
 
     private void handleNewUser() {
@@ -143,22 +146,22 @@ public class UserInterface implements IUserInterface {
             this.graph = navService.getGraph();
 
             graph.getNodes().forEach((node -> {
-                LOGGER.info("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
+                System.out.println("NODE:  "+node.getName()+" "+"("+ node.getX()+","+node.getY()+")");
                 List<Edge> el = node.getEdges();
                 Edge e1 = el.get(0);
                 Edge e2 = el.get(1);
                 Edge e3 = el.get(2);
-                LOGGER.info("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
+                System.out.println("EDGES: "+e1.getSource().getName()+"-"+e1.getDestination().getName()+" length="+e2.getDistance()+
                         " |"+e2.getSource().getName()+"-"+e2.getDestination().getName()+" length="+e2.getDistance()+
                         " |"+e3.getSource().getName()+"-"+e3.getDestination().getName()+" length="+e3.getDistance()
                 );
-
+                System.out.println("");  // This is the new line you're adding
             }));
 
             Node source = promptNode("source"); // Use getNodeFromUserInput via promptNode
             Node target = promptNode("target"); // Use getNodeFromUserInput via promptNode
             Path path = navService.getPath(source, target, graph);
-            LOGGER.info("Shortest path from "+
+            System.out.println("Shortest path from "+
                     path.getSource().getName()+
                     " to "+path.getTarget().getName()+
                     " has a distance of: "+path.getDistance());
@@ -172,7 +175,7 @@ public class UserInterface implements IUserInterface {
                 route = route.substring(0, route.length() - 5);
             }
 
-            LOGGER.info("Route: " + route);
+            System.out.println("Route: " + route);
 
             graph.setPath(path);
             client.addGraph(graph);
@@ -184,12 +187,12 @@ public class UserInterface implements IUserInterface {
             switch(userInput) {
                 case 1: // Save the graph
                     int clientId = dbService.saveClient(client);
-                    client = dbService.getClientById(clientId);
                     break;
                 case 2: // Delete and restart
                     client.getGraphList().clear();
                     continue;
                 case 9: // Exit the loop
+                    displayGoodbyeMessage();
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
