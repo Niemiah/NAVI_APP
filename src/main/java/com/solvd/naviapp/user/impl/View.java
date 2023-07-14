@@ -127,7 +127,7 @@ public class View implements IUserInterface {
                             break;
                         case 2:
                             client.getGraphList().clear();
-                            continue;
+                            break; // Break the inner loop to re-generate a graph.
                         case 9:
                             displayGoodbyeMessage();
                             return;
@@ -139,6 +139,9 @@ public class View implements IUserInterface {
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please try again.");
                 }
+            }
+            if (client.getGraphList().isEmpty()) {
+                continue; // Continue the outer loop to re-generate a graph if the graph list is empty.
             }
             break;
         }
@@ -199,7 +202,7 @@ public class View implements IUserInterface {
                             break;
                         case 2:
                             client.getGraphList().clear();
-                            continue;
+                            break; // Break the inner loop to re-generate a graph.
                         case 9:
                             displayGoodbyeMessage();
                             return;
@@ -211,6 +214,9 @@ public class View implements IUserInterface {
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please try again.");
                 }
+            }
+            if (client.getGraphList().isEmpty()) {
+                continue; // Continue the outer loop to re-generate a graph if the graph list is empty.
             }
             break;
         }
